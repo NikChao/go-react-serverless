@@ -1,0 +1,9 @@
+fields @timestamp, @message, @logStream, @log
+| filter @message like /No /
+| filter @message like / for item /
+| parse @message "No * for item *" as missingCategory, item
+| sort @timestamp desc
+| limit 1000
+| stats count() as count by item, missingCategory
+| sort count desc
+| dedup item
